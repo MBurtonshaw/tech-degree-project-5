@@ -13,7 +13,7 @@ function getJSON(url) {
         .then(cardAppendage());
 }
 
-//Invoked in getJSON() function; this function is to format the data, looping through to create and append divs with placeholders, etc. for each person, and to give the data somewhere to be displayed
+//Invoked within the getJSON() function; this function is to format the data, looping through to create and append divs with placeholders, etc. for each person, and to give the data somewhere to be displayed
 //Ran into some trouble at one point; the <div> was appending to $(".card) as text. I found this solution: https://stackoverflow.com/questions/40462236/jquery-appends-as-text-instead-of-html
 function cardAppendage() {
     for (let i = 0; i < 12; i++) {
@@ -41,7 +41,7 @@ function cardAppendage() {
     }
 }
 
-//Called within the getJSON() function; selects certain data to replace the placeholders used in cardAppendage() function
+//Invoked within the getJSON() function; selects certain data to replace the placeholders used in cardAppendage() function
 function personalData(data) {
     for (let k = 0; k < data.length; k++) {
         $(".card-name")
@@ -50,6 +50,7 @@ function personalData(data) {
         $(".card-img")
             .eq(k)
             .attr("src", data[k].picture.large);
+        // $("card-img").click(console.log("yatta"));
         $("h3")
             .next()
             .eq(k)
@@ -62,4 +63,50 @@ function personalData(data) {
 }
 
 //Calling on function
-getJSON(randomUser);
+//getJSON(randomUser);
+cardAppendage();
+
+//I found this article very helpful when it came to setting up the modal:
+//https://www.w3schools.com/howto/howto_css_modals.asp
+$(".card").click(e => {
+    $("body").append("<div class='modal-container'></div>");
+    $(".modal-container").append("<div class=modal></div>");
+    $(".modal").append(
+        "<button type='button' id='modal-close-btn' class='modal-close-btn'><strong>X</strong></button>"
+    );
+    $(".modal").append("<div class='modal-info-container'></div>");
+    $(".modal-info-container").append(
+        "<img class='modal-img' src='https://placehold.it/125x125' alt='profile picture>'"
+    );
+    $(".modal-info-container").append(
+        "<h3 id='name' class='modal-name cap'>name</h3>"
+    );
+    $(".modal-info-container").append("<p class='modal-text'>email</p>");
+    $(".modal-info-container").append("<p class='modal-text cap'>city</p>");
+    $(".modal-info-container").append("<hr>");
+    $(".modal-info-container").append(
+        "<p class='modal-text'>(555) 555-5555</p>"
+    );
+    $(".modal-info-container").append(
+        "<p class='modal-text'>123 Portland Ave., Portland, OR 97204</p>"
+    );
+    $(".modal-info-container").append(
+        "<p class='modal-text'>Birthday: 10/21/2015</p>"
+    );
+    $(".modal-container").append("<div class='modal-btn-container'>");
+    $(".modal-btn-container").append(
+        "<button type='button' id='modal-prev' class='modal-prev btn'>Prev</button>"
+    );
+    $(".modal-btn-container").append(
+        "<button type='button' id='modal-next' class='modal-next btn'>Next</button>"
+    );
+});
+
+$("#modal-close-btn").click(() => {
+    //$(".modal-container").hide();
+    console.log("hmmmmm");
+});
+
+$("window").click(e => {
+    console.log("eh?");
+});

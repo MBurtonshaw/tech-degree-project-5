@@ -62,9 +62,17 @@ function personalData(data) {
     }
 }
 
+function modalData(data) {
+    for (let m = 0; m < data.length; m++) {
+        if (data[m].name.first.value === $("#name.card-name").value) {
+            $("#name.modal-name").text(data[m].name.first);
+        }
+    }
+}
+
 //Calling on function
-//getJSON(randomUser);
-cardAppendage();
+getJSON(randomUser);
+//cardAppendage();
 
 //I found this article very helpful when it came to setting up the modal:
 //https://www.w3schools.com/howto/howto_css_modals.asp
@@ -100,13 +108,12 @@ $(".card").click(e => {
     $(".modal-btn-container").append(
         "<button type='button' id='modal-next' class='modal-next btn'>Next</button>"
     );
-});
+    modalData(userArray);
+    $("#modal-close-btn").click(() => {
+        $(".modal-container").remove();
 
-$("#modal-close-btn").click(() => {
-    //$(".modal-container").hide();
-    console.log("hmmmmm");
-});
-
-$("window").click(e => {
-    console.log("eh?");
+        /*$("window").click((e) => {
+        if(e.target === $(".modal")) {
+    console.log("eh?");*/
+    });
 });

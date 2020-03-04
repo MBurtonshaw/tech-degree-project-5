@@ -75,13 +75,13 @@ function personalData(data) {
 ////////////No image being appended here, or in the .card click event/////////////////////////////////////////////////////////////
 function modalData(data, e) {
     for (let m = 0; m < data.length; m++) {
+        const name = $("#name.modal-name");
+        const email = name.next();
+        const city = email.next();
+        const phone = city.next().next();
+        const address = phone.next();
+        const birthday = address.next();
         if (e.target === $(".card")[m]) {
-            const name = $("#name.modal-name");
-            const email = name.next();
-            const city = email.next();
-            const phone = city.next().next();
-            const address = phone.next();
-            const birthday = address.next();
             $(".modal-img").attr("src", data[m].picture.large);
             name.text(data[m].name.first + " " + data[m].name.last);
             email.text(data[m].email);
@@ -99,6 +99,74 @@ function modalData(data, e) {
                     data[m].location.postcode
             );
             birthday.text("Birthday: " + regEx(data[m].dob.date));
+        } else if (e.target === $(".card-img-container")[m]) {
+            $(".modal-img").attr("src", data[m].picture.large);
+            name.text(data[m].name.first + " " + data[m].name.last);
+            email.text(data[m].email);
+            city.text(data[m].location.city);
+            phone.text(data[m].phone);
+            address.text(
+                data[m].location.street.number +
+                    " " +
+                    data[m].location.street.name +
+                    " " +
+                    data[m].location.city +
+                    ", " +
+                    data[m].location.state +
+                    " " +
+                    data[m].location.postcode
+            );
+        } else if (e.target === $(".card-img")[m]) {
+            $(".modal-img").attr("src", data[m].picture.large);
+            name.text(data[m].name.first + " " + data[m].name.last);
+            email.text(data[m].email);
+            city.text(data[m].location.city);
+            phone.text(data[m].phone);
+            address.text(
+                data[m].location.street.number +
+                    " " +
+                    data[m].location.street.name +
+                    " " +
+                    data[m].location.city +
+                    ", " +
+                    data[m].location.state +
+                    " " +
+                    data[m].location.postcode
+            );
+        } else if (e.target === $(".card-name")[m]) {
+            $(".modal-img").attr("src", data[m].picture.large);
+            name.text(data[m].name.first + " " + data[m].name.last);
+            email.text(data[m].email);
+            city.text(data[m].location.city);
+            phone.text(data[m].phone);
+            address.text(
+                data[m].location.street.number +
+                    " " +
+                    data[m].location.street.name +
+                    " " +
+                    data[m].location.city +
+                    ", " +
+                    data[m].location.state +
+                    " " +
+                    data[m].location.postcode
+            );
+        } else if (e.target === $(".card-text")[m]) {
+            $(".modal-img").attr("src", data[m].picture.large);
+            name.text(data[m].name.first + " " + data[m].name.last);
+            email.text(data[m].email);
+            city.text(data[m].location.city);
+            phone.text(data[m].phone);
+            address.text(
+                data[m].location.street.number +
+                    " " +
+                    data[m].location.street.name +
+                    " " +
+                    data[m].location.city +
+                    ", " +
+                    data[m].location.state +
+                    " " +
+                    data[m].location.postcode
+            );
         }
     }
 }

@@ -1,5 +1,17 @@
 const randomUser = "https://randomuser.me/api/?results=12&nat=us";
 let userArray = [];
+let currentItem = 0;
+
+const lighter = "rgb(240, 245, 253)";
+const light = "rgb(204, 217, 243)";
+const dark = "rgb(115, 141, 193)";
+
+function modalColors() {
+    $(".modal").css("backgroundColor", light);
+    $(".modal-btn-container").css("backgroundColor", light);
+    $(".modal-info-container").css("backgroundColor", lighter);
+    $(".modal-name").css("color", dark);
+}
 
 //This function fetches the JSON data, stores it in the userArray[], and also calls the personalData function to display the data on-screen, as well as the cardAppendage() function to append divs, etc. for formatting the data
 function getJSON(url) {
@@ -23,7 +35,7 @@ function regEx(date) {
     return newString.substr(0, 8);
 }
 
-//Invoked within the getJSON() function; this function is to format the data, looping through to create and append divs with placeholders, etc. for each person, and to give the data somewhere to be displayed
+//This function is to format the data, looping through to create and append divs with placeholders, etc. for each person, and to give the data somewhere to be displayed
 //Ran into some trouble at one point; the <div> was appending to $(".card) as text. I found the eq() solution: https://stackoverflow.com/questions/40462236/jquery-appends-as-text-instead-of-html
 function cardAppendage() {
     for (let i = 0; i < 12; i++) {
@@ -49,136 +61,13 @@ function cardAppendage() {
             .eq(i)
             .append("<p class='card-text cap'>city, state</p>");
     }
+    $("h3").css("color", dark);
+    $(".card").attr("id", function(arr) {
+        return arr;
+    });
 }
 
-//Invoked within the getJSON() function; selects certain data to replace the placeholders used in cardAppendage() function
-function personalData(data) {
-    for (let k = 0; k < data.length; k++) {
-        $(".card-name")
-            .eq(k)
-            .text(data[k].name.first + " " + data[k].name.last);
-        $(".card-img")
-            .eq(k)
-            .attr("src", data[k].picture.large);
-        $("h3")
-            .next()
-            .eq(k)
-            .text(data[k].email);
-        $("p")
-            .next()
-            .eq(k)
-            .text(data[k].location.city);
-    }
-}
-
-//////////////////////////////////////////////////This works if you click the div.card, but not if you click the img or anything else//////
-////////////No image being appended here, or in the .card click event/////////////////////////////////////////////////////////////
-function modalData(data, e) {
-    for (let m = 0; m < data.length; m++) {
-        const name = $("#name.modal-name");
-        const email = name.next();
-        const city = email.next();
-        const phone = city.next().next();
-        const address = phone.next();
-        const birthday = address.next();
-        if (e.target === $(".card")[m]) {
-            $(".modal-img").attr("src", data[m].picture.large);
-            name.text(data[m].name.first + " " + data[m].name.last);
-            email.text(data[m].email);
-            city.text(data[m].location.city);
-            phone.text(data[m].phone);
-            address.text(
-                data[m].location.street.number +
-                    " " +
-                    data[m].location.street.name +
-                    " " +
-                    data[m].location.city +
-                    ", " +
-                    data[m].location.state +
-                    " " +
-                    data[m].location.postcode
-            );
-            birthday.text("Birthday: " + regEx(data[m].dob.date));
-        } else if (e.target === $(".card-img-container")[m]) {
-            $(".modal-img").attr("src", data[m].picture.large);
-            name.text(data[m].name.first + " " + data[m].name.last);
-            email.text(data[m].email);
-            city.text(data[m].location.city);
-            phone.text(data[m].phone);
-            address.text(
-                data[m].location.street.number +
-                    " " +
-                    data[m].location.street.name +
-                    " " +
-                    data[m].location.city +
-                    ", " +
-                    data[m].location.state +
-                    " " +
-                    data[m].location.postcode
-            );
-        } else if (e.target === $(".card-img")[m]) {
-            $(".modal-img").attr("src", data[m].picture.large);
-            name.text(data[m].name.first + " " + data[m].name.last);
-            email.text(data[m].email);
-            city.text(data[m].location.city);
-            phone.text(data[m].phone);
-            address.text(
-                data[m].location.street.number +
-                    " " +
-                    data[m].location.street.name +
-                    " " +
-                    data[m].location.city +
-                    ", " +
-                    data[m].location.state +
-                    " " +
-                    data[m].location.postcode
-            );
-        } else if (e.target === $(".card-name")[m]) {
-            $(".modal-img").attr("src", data[m].picture.large);
-            name.text(data[m].name.first + " " + data[m].name.last);
-            email.text(data[m].email);
-            city.text(data[m].location.city);
-            phone.text(data[m].phone);
-            address.text(
-                data[m].location.street.number +
-                    " " +
-                    data[m].location.street.name +
-                    " " +
-                    data[m].location.city +
-                    ", " +
-                    data[m].location.state +
-                    " " +
-                    data[m].location.postcode
-            );
-        } else if (e.target === $(".card-text")[m]) {
-            $(".modal-img").attr("src", data[m].picture.large);
-            name.text(data[m].name.first + " " + data[m].name.last);
-            email.text(data[m].email);
-            city.text(data[m].location.city);
-            phone.text(data[m].phone);
-            address.text(
-                data[m].location.street.number +
-                    " " +
-                    data[m].location.street.name +
-                    " " +
-                    data[m].location.city +
-                    ", " +
-                    data[m].location.state +
-                    " " +
-                    data[m].location.postcode
-            );
-        }
-    }
-}
-
-//Calling on function
-getJSON(randomUser);
-//cardAppendage();
-
-//I found this article very helpful when it came to setting up the modal:
-//https://www.w3schools.com/howto/howto_css_modals.asp
-//This is a click event set on .card that when clicked, the whole modal window pops up with placeholders
-$(".card").click(e => {
+function modalAppendage() {
     $("body").append("<div class='modal-container'></div>");
     $(".modal-container").append("<div class='modal'></div>");
     $(".modal").append(
@@ -213,14 +102,89 @@ $(".card").click(e => {
     $(".modal-btn-container").append(
         "<button type='button' id='modal-next' class='modal-next btn'>Next</button>"
     );
+    modalColors();
+}
+//Invoked within the getJSON() function; selects certain data to replace the placeholders used in cardAppendage() function
+function personalData(data) {
+    for (let k = 0; k < data.length; k++) {
+        $(".card-name")
+            .eq(k)
+            .text(data[k].name.first + " " + data[k].name.last);
+        $(".card-img")
+            .eq(k)
+            .attr("src", data[k].picture.large);
+        $("h3")
+            .next()
+            .eq(k)
+            .text(data[k].email);
+        $("p")
+            .next()
+            .eq(k)
+            .text(data[k].location.city);
+    }
+}
+
+function modalData(data, e) {
+    for (let m = 0; m < data.length; m++) {
+        const name = $("#name.modal-name");
+        const email = name.next();
+        const city = email.next();
+        const phone = city.next().next();
+        const address = phone.next();
+        const birthday = address.next();
+        const target = $("div.card")[m];
+        if (e.currentTarget === target) {
+            $(".modal-img").attr("src", data[m].picture.large);
+            name.text(data[m].name.first + " " + data[m].name.last);
+            email.text(data[m].email);
+            city.text(data[m].location.city);
+            phone.text(data[m].phone);
+            address.text(
+                data[m].location.street.number +
+                    " " +
+                    data[m].location.street.name +
+                    " " +
+                    data[m].location.city +
+                    ", " +
+                    data[m].location.state +
+                    " " +
+                    data[m].location.postcode
+            );
+            birthday.text("Birthday: " + regEx(data[m].dob.date));
+        }
+    }
+}
+
+//Calling on function
+getJSON(randomUser);
+
+//I found this article very helpful when it came to setting up the modal:
+//https://www.w3schools.com/howto/howto_css_modals.asp
+//This is a click event set on .card that when clicked, the whole modal window pops up with placeholders
+$(".card").click(e => {
+    for (let q = 0; q < $(".cards").length; q++) {
+        currentItem ===
+            $(".card")
+                .eq(q)
+                .attr("id");
+    }
+    modalAppendage();
     //This is calling upon the function created above with userArray to append the api data to the corresponding card's placeholders
     modalData(userArray, e);
     //This is a click event for the "X" button to remove the modal window
     $("#modal-close-btn").click(() => {
         $(".modal-container").remove();
-
-        /*$("window").click((e) => {
-        if(e.target === $(".modal")) {
-    console.log("eh?");*/
+    });
+    //This is a click event adding functionality to the "next" modal button
+    $("#modal-next").click(e => {
+        currentItem++;
+        console.log(currentItem);
+        //modalAppendage();
+        //modalData(userArray, e);
+    });
+    //This is a click event adding functionality to the "prev" modal button
+    $("#modal-prev").click(e => {
+        currentItem--;
+        console.log(currentItem);
     });
 });

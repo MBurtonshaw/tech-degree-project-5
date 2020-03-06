@@ -5,13 +5,10 @@ let currentItem = 0;
 const lighter = "rgb(240, 245, 253)";
 const light = "rgb(204, 217, 243)";
 const dark = "rgb(115, 141, 193)";
+const greenish = "rgb(56, 146, 71)";
 
-function modalColors() {
-    $(".modal").css("backgroundColor", light);
-    $(".modal-btn-container").css("backgroundColor", light);
-    $(".modal-info-container").css("backgroundColor", lighter);
-    $(".modal-name").css("color", dark);
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////API SECTION//////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //This function fetches the JSON data, stores it in the userArray[], and also calls the personalData function to display the data on-screen, as well as the cardAppendage() function to append divs, etc. for formatting the data
 function getJSON(url) {
@@ -34,6 +31,9 @@ function regEx(date) {
     //Returning the string that's been reformatted to 00/00/0000 and has now cut off the extra data on the end, beyond 0-8
     return newString.substr(0, 8);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////CARD SECTION/////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //This function is to format the data, looping through to create and append divs with placeholders, etc. for each person, and to give the data somewhere to be displayed
 //Ran into some trouble at one point; the <div> was appending to $(".card) as text. I found the eq() solution: https://stackoverflow.com/questions/40462236/jquery-appends-as-text-instead-of-html
@@ -65,6 +65,36 @@ function cardAppendage() {
     $(".card").attr("id", function(arr) {
         return arr;
     });
+}
+
+//Invoked within the getJSON() function; selects certain data to replace the placeholders used in cardAppendage() function
+function personalData(data) {
+    for (let k = 0; k < data.length; k++) {
+        $(".card-name")
+            .eq(k)
+            .text(data[k].name.first + " " + data[k].name.last);
+        $(".card-img")
+            .eq(k)
+            .attr("src", data[k].picture.large);
+        $("h3")
+            .next()
+            .eq(k)
+            .text(data[k].email);
+        $("p")
+            .next()
+            .eq(k)
+            .text(data[k].location.city);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////MODAL SECTION////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function modalColors() {
+    $(".modal").css("backgroundColor", light);
+    $(".modal-btn-container").css("backgroundColor", light);
+    $(".modal-info-container").css("backgroundColor", lighter);
+    $(".modal-name").css("color", dark);
 }
 
 function modalAppendage() {
@@ -104,25 +134,6 @@ function modalAppendage() {
     );
     modalColors();
 }
-//Invoked within the getJSON() function; selects certain data to replace the placeholders used in cardAppendage() function
-function personalData(data) {
-    for (let k = 0; k < data.length; k++) {
-        $(".card-name")
-            .eq(k)
-            .text(data[k].name.first + " " + data[k].name.last);
-        $(".card-img")
-            .eq(k)
-            .attr("src", data[k].picture.large);
-        $("h3")
-            .next()
-            .eq(k)
-            .text(data[k].email);
-        $("p")
-            .next()
-            .eq(k)
-            .text(data[k].location.city);
-    }
-}
 
 function modalData(data, e) {
     for (let m = 0; m < data.length; m++) {
@@ -155,19 +166,16 @@ function modalData(data, e) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////CLICK EVENTS AND FUNCTION INVOCATION/////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 //Calling on function
 getJSON(randomUser);
 
 //I found this article very helpful when it came to setting up the modal:
 //https://www.w3schools.com/howto/howto_css_modals.asp
-//This is a click event set on .card that when clicked, the whole modal window pops up with placeholders
+//This is a click event set on .card that when clicked, the whole modal window pops up with placeholders. Also sets currentItem variable to be used with "previous" and "next" buttons
 $(".card").click(e => {
-    for (let q = 0; q < $(".cards").length; q++) {
-        currentItem ===
-            $(".card")
-                .eq(q)
-                .attr("id");
-    }
     modalAppendage();
     //This is calling upon the function created above with userArray to append the api data to the corresponding card's placeholders
     modalData(userArray, e);
@@ -177,14 +185,62 @@ $(".card").click(e => {
     });
     //This is a click event adding functionality to the "next" modal button
     $("#modal-next").click(e => {
-        currentItem++;
-        console.log(currentItem);
-        //modalAppendage();
-        //modalData(userArray, e);
+        if (currentItem < 11) {
+            currentItem++;
+            console.log(currentItem);
+            modalData(userArray[currentItem], e);
+        } else {
+            currentItem === 0;
+        }
     });
     //This is a click event adding functionality to the "prev" modal button
     $("#modal-prev").click(e => {
-        currentItem--;
-        console.log(currentItem);
+        if (currentItem > 0) {
+            currentItem--;
+            console.log(currentItem);
+        } else {
+            currentItem === 0;
+        }
     });
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////SEARCH BAR///////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$("header").append("<form action='#' method='get'></form>");
+$("form").append(
+    "<input type='search' id='search-input' class='search-input' placeholder='Search...'>"
+);
+$("form").append(
+    "<input type='submit' value='&#x1F50D;' id='search-submit' class='search-submit'>"
+);
+
+$("#search-input").keyup(e => {
+    //Filterlist necessary for border styling
+    let filterList = [];
+    const $submit = $("#search-input").val();
+    //Looping through the cards, hiding those that don't match
+    for (let t = 0; t < $(".card").length; t++) {
+        $(".card")
+            .eq(t)
+            .hide();
+        //Declaring a variable to select the text from the .card #name
+        let $name = $(".card-name")
+            .eq(t)
+            .prop("innerHTML")
+            .toLowerCase();
+        //Conditional saying if what is searched matches a .card #name, show that card and push it to filterList
+        if ($name.includes($submit.toLowerCase())) {
+            $(".card")
+                .eq(t)
+                .show();
+            filterList.push($(".card"));
+            //Once the search has found the .card being searched for, the card will acquire a green border
+            if (filterList.length === 1) {
+                $(".card").eq(t).css("border", "3px solid rgb(96, 178, 110)");
+                } else {
+                    $(".card").css("border", "none");
+                }
+        }
+    }
 });

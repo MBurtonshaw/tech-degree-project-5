@@ -136,7 +136,7 @@ function modalAppendage() {
 }
 
 function modalData(data, e) {
-    for (let m = 0; m < data.length; m++) {
+    for (let m = 0; m < $(".card").length; m++) {
         const name = $("#name.modal-name");
         const email = name.next();
         const city = email.next();
@@ -162,6 +162,9 @@ function modalData(data, e) {
                     data[m].location.postcode
             );
             birthday.text("Birthday: " + regEx(data[m].dob.date));
+            currentItem = $(".card")
+                .eq(m)
+                .prop("id");
         }
     }
 }
@@ -187,8 +190,9 @@ $(".card").click(e => {
     $("#modal-next").click(e => {
         if (currentItem < 11) {
             currentItem++;
+            e.target = $(".card").prop("id");
+            modalData(currentItem, e);
             console.log(currentItem);
-            modalData(userArray[currentItem], e);
         } else {
             currentItem === 0;
         }
@@ -197,6 +201,7 @@ $(".card").click(e => {
     $("#modal-prev").click(e => {
         if (currentItem > 0) {
             currentItem--;
+            modalData(currentItem, e);
             console.log(currentItem);
         } else {
             currentItem === 0;
@@ -237,10 +242,12 @@ $("#search-input").keyup(e => {
             filterList.push($(".card"));
             //Once the search has found the .card being searched for, the card will acquire a green border
             if (filterList.length === 1) {
-                $(".card").eq(t).css("border", "3px solid rgb(96, 178, 110)");
-                } else {
-                    $(".card").css("border", "none");
-                }
+                $(".card")
+                    .eq(t)
+                    .css("border", "3px solid rgb(96, 178, 110)");
+            } else {
+                $(".card").css("border", "none");
+            }
         }
     }
 });

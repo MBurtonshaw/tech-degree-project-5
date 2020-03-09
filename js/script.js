@@ -135,38 +135,34 @@ function modalAppendage() {
     modalColors();
 }
 
-function modalData(data, e) {
-    for (let m = 0; m < $(".card").length; m++) {
-        const name = $("#name.modal-name");
-        const email = name.next();
-        const city = email.next();
-        const phone = city.next().next();
-        const address = phone.next();
-        const birthday = address.next();
-        const target = $("div.card")[m];
-        if (e.currentTarget === target) {
-            $(".modal-img").attr("src", data[m].picture.large);
-            name.text(data[m].name.first + " " + data[m].name.last);
-            email.text(data[m].email);
-            city.text(data[m].location.city);
-            phone.text(data[m].phone);
-            address.text(
-                data[m].location.street.number +
-                    " " +
-                    data[m].location.street.name +
-                    " " +
-                    data[m].location.city +
-                    ", " +
-                    data[m].location.state +
-                    " " +
-                    data[m].location.postcode
-            );
-            birthday.text("Birthday: " + regEx(data[m].dob.date));
-            currentItem = $(".card")
-                .eq(m)
-                .prop("id");
-        }
-    }
+function modalData(id) {
+    const name = $("#name.modal-name");
+    const email = name.next();
+    const city = email.next();
+    const phone = city.next().next();
+    const address = phone.next();
+    const birthday = address.next();
+    $(".modal-img").attr("src", userArray[currentItem].picture.large);
+    name.text(
+        userArray[currentItem].name.first +
+            " " +
+            userArray[currentItem].name.last
+    );
+    email.text(userArray[currentItem].email);
+    city.text(userArray[currentItem].location.city);
+    phone.text(userArray[currentItem].phone);
+    address.text(
+        userArray[currentItem].location.street.number +
+            " " +
+            userArray[currentItem].location.street.name +
+            " " +
+            userArray[currentItem].location.city +
+            ", " +
+            userArray[currentItem].location.state +
+            " " +
+            userArray[currentItem].location.postcode
+    );
+    birthday.text("Birthday: " + regEx(userArray[currentItem].dob.date));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////CLICK EVENTS AND FUNCTION INVOCATION/////////////////////////////////////////////////////////////////
@@ -179,9 +175,10 @@ getJSON(randomUser);
 //https://www.w3schools.com/howto/howto_css_modals.asp
 //This is a click event set on .card that when clicked, the whole modal window pops up with placeholders. Also sets currentItem variable to be used with "previous" and "next" buttons
 $(".card").click(e => {
+    currentItem = e.currentTarget.id;
     modalAppendage();
     //This is calling upon the function created above with userArray to append the api data to the corresponding card's placeholders
-    modalData(userArray, e);
+    modalData(userArray[currentItem]);
     //This is a click event for the "X" button to remove the modal window
     $("#modal-close-btn").click(() => {
         $(".modal-container").remove();
@@ -190,9 +187,7 @@ $(".card").click(e => {
     $("#modal-next").click(e => {
         if (currentItem < 11) {
             currentItem++;
-            e.target = $(".card").prop("id");
-            modalData(currentItem, e);
-            console.log(currentItem);
+            modalData(userArray[currentItem]);
         } else {
             currentItem === 0;
         }
@@ -201,8 +196,7 @@ $(".card").click(e => {
     $("#modal-prev").click(e => {
         if (currentItem > 0) {
             currentItem--;
-            modalData(currentItem, e);
-            console.log(currentItem);
+            modalData(userArray[currentItem]);
         } else {
             currentItem === 0;
         }
@@ -251,3 +245,4 @@ $("#search-input").keyup(e => {
         }
     }
 });
+

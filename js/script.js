@@ -97,6 +97,7 @@ function modalColors() {
     $(".modal-name").css("color", dark);
 }
 
+//Function to append the placeholder template for the modal window
 function modalAppendage() {
     $("body").append("<div class='modal-container'></div>");
     $(".modal-container").append("<div class='modal'></div>");
@@ -135,6 +136,7 @@ function modalAppendage() {
     modalColors();
 }
 
+//Function to append data that corresponds to .card to the modal window. Formats birthday data as well
 function modalData(id) {
     const name = $("#name.modal-name");
     const email = name.next();
@@ -177,7 +179,6 @@ getJSON(randomUser);
 $(".card").click(e => {
     currentItem = e.currentTarget.id;
     modalAppendage();
-    //This is calling upon the function created above with userArray to append the api data to the corresponding card's placeholders
     modalData(userArray[currentItem]);
     //This is a click event for the "X" button to remove the modal window
     $("#modal-close-btn").click(() => {
@@ -245,4 +246,3 @@ $("#search-input").keyup(e => {
         }
     }
 });
-

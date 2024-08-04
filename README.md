@@ -1,2 +1,4 @@
-# tech-degree-project-5
-Tech Degree Project 5
+Use search-bar functionality to search through an employee directory.
+
+# To Run
+Run index.html
